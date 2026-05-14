@@ -2,135 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>SONIX | QuickCap AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SONIX STUDIO ELITE - CAPTION AI</title>
     <style>
-        :root {
-            --bg: #000000;
-            --container-bg: #1a1a1a;
-            --accent: #00ff41;
-            --text: #ffffff;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root { --neon: #00ff41; --bg: #0a0a0a; }
+        body { margin: 0; background: var(--bg); color: var(--neon); font-family: 'Courier New', monospace; display: flex; height: 100vh; overflow: hidden; }
         
-        body {
-            margin: 0; background-color: var(--bg);
-            font-family: 'Inter', sans-serif;
-            color: var(--text);
-            display: flex; flex-direction: column; align-items: center;
-            min-height: 100dvh; padding: 20px;
+        /* --- SIDEBAR STYLE --- */
+        .sidebar { 
+            width: 350px; background: #111; padding: 20px; 
+            border-right: 1px solid #333; display: flex; 
+            flex-direction: column; z-index: 10; overflow-y: auto; 
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5); 
+        }
+        
+        .main { 
+            flex-grow: 1; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
+            background: #000; position: relative; 
         }
 
-        h1 { color: var(--accent); font-size: 1.5rem; letter-spacing: 2px; margin-bottom: 20px; }
-
-        /* --- PREVIEW WINDOW (SONIX STYLE) --- */
-        .preview-container {
-            position: relative; width: 100%; max-width: 340px;
-            aspect-ratio: 9/16; background: #000;
-            border-radius: 20px; overflow: hidden;
-            border: 1px solid var(--accent);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        /* --- PREVIEW WINDOW --- */
+        .preview-box {
+            position: relative; width: 90%; max-width: 400px;
+            aspect-ratio: 9/16; border: 1px solid #222;
+            background: #000; overflow: hidden;
         }
-
-        video { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
-
-        /* --- CAPTION STYLE (BOUNCY PHONK STYLE) --- */
+        video { width: 100%; height: 100%; object-fit: contain; }
+        
         #subs {
-            position: absolute; bottom: 25%; width: 90%; left: 5%;
-            color: #fff200; font-size: 38px; font-weight: 900;
-            text-transform: uppercase; text-shadow: 3px 3px 0px #000;
+            position: absolute; bottom: 20%; width: 90%; left: 5%;
+            color: #fff200; font-size: 40px; font-weight: 900;
+            text-transform: uppercase; text-shadow: 4px 4px 0px #000;
             pointer-events: none; line-height: 1; text-align: center;
-            transition: transform 0.05s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.1s;
         }
 
-        /* --- CONTROLS (SONIX BUBBLE STYLE) --- */
-        .controls {
-            margin-top: 25px; display: flex; flex-direction: column;
-            gap: 12px; width: 100%; max-width: 340px;
+        /* --- UI ELEMENTS --- */
+        .btn { 
+            background: var(--neon); color: #000; border: none; 
+            padding: 14px; font-weight: bold; cursor: pointer; 
+            margin: 10px 0; border-radius: 4px; width: 100%; 
+            text-transform: uppercase; transition: 0.2s; 
+        }
+        .btn:hover { filter: brightness(1.2); box-shadow: 0 0 15px var(--neon); }
+        .btn-blue { background: #00d9ff; }
+        
+        .ai-box { 
+            background: rgba(0, 255, 65, 0.1); border: 1px solid var(--neon); 
+            padding: 15px; margin: 10px 0; border-radius: 4px; 
+            display: none; font-size: 11px; 
+        }
+        
+        label { font-size: 10px; color: #888; display: block; margin-top: 15px; font-weight: bold; text-transform: uppercase; }
+        
+        #console { 
+            flex-grow: 1; background: #000; padding: 12px; 
+            font-size: 10px; color: #00ff41; border: 1px solid #222; 
+            margin-top: 10px; overflow-y: auto; font-family: monospace; 
         }
 
-        .btn {
-            padding: 15px; border-radius: 30px; border: 1px solid var(--accent);
-            font-weight: bold; cursor: pointer; font-size: 0.9rem;
-            transition: 0.3s; text-transform: uppercase;
-        }
-
-        .btn-choose { background: transparent; color: var(--accent); }
-        .btn-process { background: var(--accent); color: #000; display: none; }
-        .btn:active { transform: scale(0.95); opacity: 0.8; }
-
-        #status {
-            text-align: center; color: var(--accent);
-            font-size: 0.75rem; margin-top: 10px; opacity: 0.7;
-        }
-
-        /* Settings Icon */
-        .settings-btn {
-            position: fixed; top: 20px; right: 20px;
-            background: var(--container-bg); border: 1px solid var(--accent);
-            color: var(--accent); border-radius: 50%; width: 40px; height: 40px;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
+        .settings-icon { position: absolute; top: 10px; right: 10px; cursor: pointer; opacity: 0.5; }
+        .settings-icon:hover { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <button class="settings-btn" onclick="resetKey()">⚙️</button>
+<div class="sidebar">
+    <h2 style="margin:0; font-size: 20px;">STUDIO ELITE</h2>
+    <p style="font-size:9px; color:#555; margin-bottom:20px;">CAPTION ENGINE V1.2 | AI OPTIMIZED</p>
+    
+    <button class="btn btn-blue" onclick="document.getElementById('upload').click()">1. LOAD SOURCE VIDEO</button>
+    <input type="file" id="upload" accept="video/*" style="display:none">
 
-    <h1>QUICKCAP AI</h1>
+    <div id="ai-suggest" class="ai-box">
+        <strong style="color:#fff;">AI ANALYSIS:</strong><br>
+        <span id="ai-text">Waiting for media stream...</span>
+    </div>
 
-    <div class="preview-container">
+    <label>Caption Style</label>
+    <select style="width:100%; background:#000; color:var(--neon); border:1px solid #444; padding:8px;">
+        <option>PHONK POP (Yellow)</option>
+        <option>MATRIX (Green)</option>
+        <option>CYBERPUNK (Pink)</option>
+    </select>
+
+    <label>Animation Intensity</label>
+    <input type="range" min="1" max="1.5" step="0.1" value="1.3">
+    
+    <button class="btn" id="processBtn" style="display:none;">2. START AI CAPTIONING</button>
+    
+    <div id="console">> SYSTEM READY...</div>
+    <button class="btn" style="background:#222; color:#555; font-size:9px;" onclick="resetKey()">RESET API ACCESS</button>
+</div>
+
+<div class="main">
+    <div class="preview-box">
         <video id="v" playsinline></video>
         <div id="subs">READY</div>
     </div>
-
-    <div class="controls">
-        <input type="file" id="f" accept="video/*" style="display:none">
-        
-        <button class="btn btn-choose" onclick="document.getElementById('f').click()">
-            1. Select Video
-        </button>
-        
-        <button id="processBtn" class="btn btn-process" onclick="startAI()">
-            2. Generate Captions
-        </button>
-
-        <div id="status">Waiting for file...</div>
-    </div>
+</div>
 
 <script>
-    // SECURE KEY MANAGEMENT
     let DEEPGRAM_KEY = localStorage.getItem('deepgram_key');
-
     const v = document.getElementById('v');
     const subs = document.getElementById('subs');
-    const status = document.getElementById('status');
+    const logger = document.getElementById('console');
+    const aiBox = document.getElementById('ai-suggest');
+    const aiText = document.getElementById('ai-text');
     const processBtn = document.getElementById('processBtn');
     let wordsData = [];
 
-    document.getElementById('f').onchange = (e) => {
+    function log(m) { 
+        logger.innerHTML += `<div>> ${m}</div>`; 
+        logger.scrollTop = logger.scrollHeight; 
+    }
+
+    document.getElementById('upload').onchange = (e) => {
         const file = e.target.files[0];
         if (file) {
             v.src = URL.createObjectURL(file);
-            processBtn.style.display = 'block';
-            status.innerText = "Video synced. Ready for AI.";
+            v.onloadedmetadata = () => {
+                log(`VIDEO LOADED: ${v.videoWidth}x${v.videoHeight}`);
+                aiBox.style.display = 'block';
+                aiText.innerText = "Video detected. Ready for Deepgram Nova-2 transcription.";
+                processBtn.style.display = 'block';
+            };
         }
     };
 
-    async function startAI() {
-        // Ask for key if missing
+    processBtn.onclick = async () => {
         if (!DEEPGRAM_KEY) {
-            DEEPGRAM_KEY = prompt("Enter your Deepgram API Key:");
+            DEEPGRAM_KEY = prompt("ENTER DEEPGRAM API KEY:");
             if (DEEPGRAM_KEY) localStorage.setItem('deepgram_key', DEEPGRAM_KEY);
             else return;
         }
 
-        const file = document.getElementById('f').files[0];
-        status.innerText = "SONIX AI is listening...";
+        const file = document.getElementById('upload').files[0];
+        log("INITIALIZING AI ANALYSER...");
         processBtn.disabled = true;
-        processBtn.style.opacity = "0.5";
-        
+        processBtn.innerText = "PROCESSING...";
+
         try {
             const response = await fetch('https://api.deepgram.com/v1/listen?smart_format=true&model=nova-2', {
                 method: 'POST',
@@ -142,21 +154,23 @@
             });
 
             const data = await response.json();
-            
             if (data.error) throw new Error(data.error);
 
             wordsData = data.results.channels[0].alternatives[0].words;
-            status.innerText = "Processing Complete. Tap Video to Play.";
-            subs.innerText = "GO!";
-            processBtn.style.display = "none";
+            log(`SUCCESS: ${wordsData.length} WORDS SYNCED.`);
+            aiText.innerText = "AI Processing complete. Captions are now locked to timeline.";
+            subs.innerText = "SYNCED";
+            processBtn.innerText = "RE-PROCESS VIDEO";
+            processBtn.disabled = false;
         } catch (err) {
-            status.innerText = "Error: Invalid Key or Network.";
+            log("CRITICAL ERROR: INVALID KEY OR UPLOAD.");
             localStorage.removeItem('deepgram_key');
             DEEPGRAM_KEY = null;
+            processBtn.disabled = false;
+            processBtn.innerText = "RETRY ATTEMPT";
         }
-    }
+    };
 
-    // High-Speed Caption Sync
     v.ontimeupdate = () => {
         const currentTime = v.currentTime;
         const currentWord = wordsData.find(w => currentTime >= w.start && currentTime <= w.end);
@@ -165,12 +179,9 @@
             const wordText = currentWord.word.toUpperCase();
             if (subs.innerText !== wordText) {
                 subs.innerText = wordText;
-                
-                // SONIX Signature "Pop" Effect
-                subs.style.transform = "scale(1.3) rotate(-3deg)";
-                setTimeout(() => { 
-                    subs.style.transform = "scale(1) rotate(0deg)"; 
-                }, 40);
+                // Studio Elite Pop Effect
+                subs.style.transform = "scale(1.3) rotate(-2deg)";
+                setTimeout(() => { subs.style.transform = "scale(1) rotate(0deg)"; }, 50);
             }
         }
     };
@@ -179,7 +190,7 @@
 
     function resetKey() {
         localStorage.removeItem('deepgram_key');
-        alert("API Key cleared.");
+        alert("API ACCESS REVOKED.");
         location.reload();
     }
 </script>
